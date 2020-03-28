@@ -168,7 +168,7 @@ article > figure {
 
 article > figure > figcaption {
   text-align: center;
-  font-size: large;
+  font-style: italic;
 }
 
 .video-demo > video {
@@ -179,6 +179,8 @@ article > figure > figcaption {
 .video-demo > figcaption {
   display: flex;
   align-items: center;
+  font-size: large;
+  font-style: normal;
 }
 
 .video-demo > figcaption > a {
@@ -199,4 +201,62 @@ article > figure > figcaption {
 
 .video-demo > figcaption > span {
   flex: 1 1 auto;
+}
+
+svg .component > rect {
+  fill: lightgray; stroke: black; stroke-width: 2;
+}
+
+svg .component > polyline {
+  fill: none; stroke: black; stroke-width: 2;
+}
+
+svg .thread > rect, .communication > rect {
+  fill: white; stroke: black; stroke-width: 1;
+}
+
+svg .thread > text, .communication > text {
+  text-anchor: middle; font-size: x-small;
+}
+
+svg .component > text {
+  text-anchor: middle; font-size: x-small; font-weight: bold;
+}
+
+svg line {
+  stroke: black; stroke-width: 1;
+}
+
+svg .component > .part {
+  font-size: x-small; font-style: italic; font-weight: normal;
+}
+
+svg .components text,
+svg .implementations text {
+  font-size: x-small; text-anchor: middle;
+}
+
+svg .components rect {
+  stroke: black; stroke-width: 1;
+  fill: none;
+}
+
+svg .implementations > rect {
+  stroke: black; stroke-width: 1;
+  fill: white;
+}
+
+svg .flow text {
+  text-anchor: middle;
+  font-size: x-small;
+}
+
+svg .flow circle {
+  fill: none;
+  stroke: black;
+}
+
+svg .flow path {
+  fill: none;
+  stroke: black;
 }
