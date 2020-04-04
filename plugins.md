@@ -100,21 +100,21 @@ Each module will extend each of QuestScreen's components with additional code.
     </g>
     <g class="implementations">
       <rect x="30" y="40" width="80" height="20" />
-      <text x="70" y="52">Renderer</text>
+      <text x="70" y="53">Renderer</text>
       <rect x="150" y="40" width="80" height="20" />
-      <text x="190" y="52">Data</text>
+      <text x="190" y="53">Data</text>
       <rect x="270" y="40" width="80" height="20" />
-      <text x="310" y="52">Controller</text>
-      <rect x="100" y="70" width="60" height="20" />
-      <text x="130" y="82">renderData</text>
-      <rect x="100" y="100" width="60" height="20" />
-      <text x="130" y="112">Configuration</text>
+      <text x="310" y="53">Controller</text>
+      <rect x="95" y="70" width="70" height="20" />
+      <text x="130" y="83">renderData</text>
+      <rect x="95" y="100" width="70" height="20" />
+      <text x="130" y="113">Configuration</text>
       <rect x="190" y="70" width="60" height="20" />
       <text x="220" y="82">Endpoints</text>
       <rect x="270" y="100" width="80" height="20" />
-      <text x="310" y="112">HTML / CSS</text>
-      <rect x="30" y="130" width="320" height="20" />
-      <text x="190" y="142">Descriptor</text>
+      <text x="310" y="113">HTML / CSS</text>
+      <rect x="30" y="130" width="200" height="20" />
+      <text x="130" y="143">Descriptor</text>
     </g>
   </svg>
   <figcaption>Components of a module and where they are used</figcaption>
@@ -146,10 +146,12 @@ As it will typically render some HTML, it is usually accompanied with a set of H
 The whole client is pure vanilla ECMAScript 2018 and includes basic utilities for rendering HTML based on `<template>` elements.
 Therefore, you can send along **HTML** (and also **CSS**) files.
 
-Finally, the **Descriptor** contains all necessary metadata for setting up the module.
-It defines how to create all other described objects, e.g. how many endpoints the module has and which paths they bind to; Which js/html/css files should be sent to the client; how to create the State and so on.
+Finally, the **Descriptor** contains the necessary metadata for setting up the module.
+It defines how to create the described objects in the app, e.g. how many endpoints the module has and which paths they bind to, how to create the State and so on.
 It also describes which *resources* the module uses, i.e. files on the file system.
 These are selected via parent directory and merged in the same way as configuration objects are merged.
+
+The HTML/CSS/JS code that implements the web client is supplied by the plugin descriptor containing the module.
 
 ### The Render Loop
 
@@ -163,29 +165,24 @@ Its functions are called in a specific order.
       <rect id="callr" width="80" height="20" fill="none" stroke="black" />
     </defs>
     <g class="flow">
-      <text x="80" y="113">Start</text>
-      <circle cx="110" cy="110" r="10" />
-      <path d="m120,110 h10 a5,5 0 0 0 5,-5 v-30 a5,5 0 0 0 -5,-5 h-10" marker-end="url(#head)" />
+      <circle cx="60" cy="70" r="10" />
+      <text x="100" y="73">Start</text>
+      <path d="m50,70 h-10 a5,5 0 0 1 -5,-5 v-20 a5,5 0 0 1 5,-5 h10" marker-end="url(#head)" />
       <g class="call">
-        <use xlink:href="#callr" x="40" y="60" />
-        <text x="80" y="73">CreateRenderer</text>
+        <use xlink:href="#callr" x="50" y="30" />
+        <text x="90" y="43">CreateRenderer</text>
       </g>
-      <path d="m40,70 h-10 a5,5 0 0 1 -5,-5 v-20 a5,5 0 0 1 5,-5 h10" marker-end="url(#head)" />
-      <g class="call">
-        <use xlink:href="#callr" x="40" y="30" />
-        <text x="80" y="43">SetConfig</text>
-      </g>
-      <line x1="120" y1="40" x2="160" y2="40" marker-end="url(#head)" />
+      <line x1="130" y1="40" x2="160" y2="40" marker-end="url(#head)" />
       <g class="call">
         <use xlink:href="#callr" x="160" y="30" />
-        <text x="200" y="43">RebuildState</text>
+        <text x="200" y="43">Rebuild</text>
       </g>
       <line x1="240" y1="40" x2="270" y2="40" marker-end="url(#head)" />
       <g class="call">
         <use xlink:href="#callr" x="270" y="30" />
         <text x="310" y="43">Render</text>
       </g>
-      <path d="m350,40 h5 a5,5 0 0 0 5,-5 v-10 a5,5 0 0 0 -5,-5 h-325 a5,5 0 0 0 -5,5 v10 a5,5 0 0 0 5,5" />
+      <path d="m350,40 h5 a5,5 0 0 0 5,-5 v-10 a5,5 0 0 0 -5,-5 h-205 a5,5 0 0 0 -5,5 v10 a5,5 0 0 0 5,5" />
       <path d="m260,20 a5,5 0 0 0 -5,5 v10 a5,5 0 0 0 5,5" />
       <path d="m355,40 a5,5 0 0 1 5,5 v20 a5,5 0 0 1 -5,5 h-5" marker-end="url(#head)" />
       <g class="call">
@@ -215,29 +212,31 @@ Its functions are called in a specific order.
   <figcaption>Sequences in which ModuleRenderer's functions get called</figcaption>
 </figure>
 
-After creating the renderer via `api.Module`, the first function that will be called is `SetConfig`.
+After creating the renderer via `api.Module`, the first function that will be called is `Rebuild`.
 This happens when a scene is activated which uses the module.
-The received data is the merged config for this scene.
+It receives a merge config and the state data generated with ModuleState's `CreateRendererData`.
+`Rebuild` should set up everything so that the module can be rendered with the given config and state.
+It has access to the `RenderContext` so that it can pre-render stuff to textures that can later be rendered via `Render`.
 
-Afterwards, `ReceiveData` will be called with data queried from ModuleState's `CreateRendererData`.
-This will initialize the ModuleRenderer so that it knows what to render.
-`ReceiveData` has access to an SDL renderer so that it may pre-render the module visualization into a texture which can later be rendered via `Render`.
-
-`Render` should render the module's visualization to the given SDL renderer.
-This should be as fast as possible; try to move every expensive operation to `RebuildState` and the animation functions if it doesn't need to be recalculated every time.
-This should usually be possible because whenever the data to be rendered changes, it will either happen via `RebuildState` or via `InitTransition`.
+`Render` should render the module's visualization to the given context.
+This should be as fast as possible; try to move every expensive operation to `Rebuild` and the animation functions if it doesn't need to be recalculated every time.
+This should usually be possible because whenever the data to be rendered changes, it will either happen via `Rebuild` or via `InitTransition`.
 The displayed picture is not refreshed without user input, so you can't implement continuous animation in `Render`!
 
-Whenever the current scene changes, `SetConfig` will receive the merged configuration for the new scene (even if it is identical to the current configuration), followed by a `RebuildState` which receives the data of the new scene.
+Whenever the current scene changes, `Rebuild` will receive the merged configuration for the new scene (even if it is identical to the current configuration) and new data from the ModuleState.
+`Rebuild` will also be called when the user changes part of the configuration.
 
 `InitTransition` will be called to receive data created by the module's endpoint(s).
+It gets the data created by the endpoint that initialized the transition.
 It returns a time duration which is the duration of the following animation.
 You may return -1 to tell the *Render* component that nothing changed and no animation will occur, which skips the animation loop and `FinishTransition` altogether.
 Returning 0 will lead to an immediate call to `FinishTransition`.
 
 If you returned a positive number, the animation loop – consisting of a call to `TransitionStep` followed by a call to `Render` – will start and last for the specified duration.
+During this loop, you can animate the transition..
+All other module's `Render` functions will be called together with the current module's `Render` function.
 
-`FinishTransition` should put the ModuleRenderer in a stable state, i.e. the resulting state should be identical to the one the module renderer would be in when the current `ModuleState` would have been sent via `RebuildState`.
+`FinishTransition` should put the ModuleRenderer in a stable state, i.e. the resulting state should be identical to the one the module renderer would be in when the current `ModuleState` would have been sent via `Rebuild`.
 
 ## Plugins
 
