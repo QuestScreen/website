@@ -32,7 +32,7 @@ An additional editor for selecting a specific date is left as an exercise for th
 
 We'll be starting from the [plugin template](https://github.com/QuestScreen/PluginTemplate) repository.
 For a real plugin, you might want to immediately create your own repository using the *Use this template* button, but for now, we'll simply be downloading the contents as ZIP.
-Unzip it into a folder `discworld` so that this folder contains the file `go.mod`.
+Unzip it into a folder `discworld` somewhere in `$GOPATH/src` so that this folder contains the file `go.mod`.
 
 The directory `moduleTemplate` contains the template for our module.
 A plugin may contain any number of modules, so for each additional module, you'd just copy the module template.
@@ -525,6 +525,285 @@ For the background, we set the primary color to white and the `TextureIndex` to 
 
 The last thing we need to do is to implement the module's UI for changing its state in the Web Client.
 
+First, we'll write some HTML to define the structure of our interface.
+We want to have three rows: One for the day, one for the month and one for the year.
+For each row, we want to have three buttons in each direction for altering the date, to enable the user to change the date quickly if necessary.
+
+HTML goes into the file `web/html/myplugin.html` (you can rename it if you want).
+Here are the templates we need:
+
+```html
+<template id="tmpl-tutorial-calendar-row">
+  <tr>
+    <td><button><i class="fas fa-angle-double-left"></i> 10</button></td>
+    <td><button><i class="fas fa-angle-double-left"></i> 3</button></td>
+    <td><button><i class="fas fa-angle-left"></i> 1</button></td>
+    <td><span class="cal-value"></span></td>
+    <td><button>1 <i class="fas fa-angle-right"></i></button></td>
+    <td><button>3 <i class="fas fa-angle-double-right"></i></button></td>
+    <td><button>10 <i class="fas fa-angle-double-right"></i></button></td>
+  </tr>
+</template>
+
+<template id="tmpl-tutorial-calendar-state">
+  <table class="pure-table pure-table-horizontal">
+    <tbody>
+      <!-- rows injected here -->
+    </tbody>
+  </table>
+</template>
+```
+
+Here, we're taking advantage of
+
+ * [Font Awesome][4], which is bundled with the Web Client, for icons.
+ * [Pure CSS][5], which is also bundled with the Web Client, for styling.
+
+ This relieves us from bundling any custom CSS.
+
+We're using long `id`s because they must be unique in the whole document.
+Our HTML will be appended to the HTML of the core and any other plugin, so we'll better be explicit with our names.
+
+Since our templates are pure HTML, we do not see how they are put together yet; we have to do that in JavaScript.
+So lets now open `web/js/myplugin.js` and put this template rendering code at the top:
+
+```javascript
+const tutorialCalendarSteps = [-10, -3, -1, 1, 3, 10];
+
+tmpl.tutorial = {
+  calendar: {
+    row: new Template("#tmpl-tutorial-calendar-row",
+        function (ctrl, handler) {
+      for (const [index, button] of this.querySelectorAll("button").entries()) {
+        button.addEventListener("click",
+            () => handler.call(ctrl, tutorialCalendarSteps[index]));
+      }
+    }),
+    state: new Template("#tmpl-tutorial-calendar-state",
+        function (ctrl) {
+      const tbody = this.querySelector("tbody");
+
+      const dayRow = tmpl.tutorial.calendar.row.render(
+          ctrl, ctrl.changeDay);
+      tbody.appendChild(dayRow);
+      ctrl.daySpan = dayRow.querySelector("span");
+
+      const monthRow = tmpl.tutorial.calendar.row.render(
+          ctrl, ctrl.changeMonth);
+      tbody.appendChild(monthRow);
+      ctrl.monthSpan = monthRow.querySelector("span");
+
+      const yearRow = tmpl.tutorial.calendar.row.render(
+          ctrl, ctrl.changeYear);
+      tbody.appendChild(yearRow);
+      ctrl.yearSpan = yearRow.querySelector("span");
+    })
+  }
+};
+```
+
+`tmpl` here is a global object that's used for all templates.
+It's not required, but recommended to use it.
+Inside, we add an object for our plugin, and in there, our module's template renderers.
+A template renderer is an instance of the class `Template`, which implements a method `render`.
+`render` copies the children of the HTML `<template>` element into the current DOM and then calls the user-provided renderer function on it.
+
+Those user-provided renderer functions are where we inject values into the template.
+`state` is the main template and adds three instances of `row` to the table; each `row` links its buttons to the relevant handler of the controller in `ctrl`.
+
+To be able to write the current day, month and year value easily, we register a reference to the `span` elements containing those values with the controller.
+We don't fill the values just yet.
+
+---
+
+Now we need to implement the controller.
+A controller is an object with a `ui()` function, which returns the UI for changing the module's state.
+Let's implement it:
+
+```javascript
+class TutorialCalendar {
+  constructor() {
+    this.id = "tutorial-calendar";
+  }
+
+  updateData(state) {
+    this.daySpan.textContent = state.day;
+    this.monthSpan.textContent = state.month;
+    this.yearSpan.textContent = state.year;
+    this.state = state;
+  }
+
+  ui(app, state) {
+    // this will assign daySpan, monthSpan and yearSpan.
+    let ret = tmpl.tutorial.calendar.state.render(this);
+    this.updateData(state);
+    return ret;
+  }
+
+  async changeDay(amount) {
+    this.updateData(await App.fetch("state/tutorial-calendar", "POST", amount));
+  }
+
+  async changeMonth(amount) {
+    this.updateData(
+      await App.fetch("state/tutorial-calendar", "POST", amount * 32));
+  }
+
+  async changeYear(amount) {
+    this.updateData(
+      await App.fetch("state/tutorial-calendar", "POST", amount * 400));
+  }
+}
+
+app.registerStateController(new TutorialCalendar());
+```
+
+The helper function `updateData` displays the current date in the UI.
+It also stores the `state` in the controller.
+Why would we need it?
+Because `changeMonth` currently doesn't work correctly because *Ick* has only 16 days and we should act correctly on the user skipping from, to or over that month.
+This is left as an exercise to the reader.
+
+With `App.fetch`, we query our module endpoint, which takes the number of days we want to modify as parameter.
+It returns the new date, and we update the UI accordingly.
+Generally, the update logic should not be reproduced in the client if not absolutely necessary.
+Updating the actual values based on the response ensures that the client will not get out of sync with the server, e.g. when the request fails due to temporary network problems.
+
+## Finishing the Plugin
+
+Now the module is ready, and we'll finish the plugin metadata.
+Open `plugin.go`, we'll modify it as follows:
+
+---
+
+```go
+package main
+
+import (
+	"github.com/QuestScreen/PluginTemplate/calendar"  // change this
+	"github.com/QuestScreen/PluginTemplate/generated" // and this
+	"github.com/QuestScreen/api"
+)
+
+// QSPlugin is the plugin's descriptor.
+var QSPlugin = api.Plugin{
+	Name: "Discworld Tutorial",
+	Modules: []*api.Module{
+		&calendar.Descriptor,
+	},
+	AdditionalJS:    generated.MustAsset("web/js/myplugin.js"),
+	AdditionalHTML:  generated.MustAsset("web/html/myplugin.html"),
+	AdditionalCSS:   nil,
+```
+
+For starters, you need to modify the import paths for `calendar` and `generated` to match the actual path of your plugin in `$GOPATH/src`.
+`generated` contains our web files as Go source.
+To generate them, you'll need [go-bindata][6] and execute `make generated/data.go` in the plugin's folder.
+If you changed the file names of the web files, you should also update them in the `Makefile`.
+
+Then, we'll start the plugin descriptor.
+Its name *must* be `QSPlugin` because that's the name the Core will search for when importing a module.
+All our web content goes into the `Additional*` fields.
+You can split the code into multiple files, but they must be joined here into a single byte array.
+
+---
+
+```go
+	SystemTemplates: []api.SystemTemplate{
+		{
+			Name: "Discworld", ID: "tutorial-discworld",
+			Config: []byte("name: Discworld"),
+		},
+	},
+```
+
+Here we define that the plugin requires a system named **Discworld**.
+This means that if a system with the given ID does not exist at app startup, it will be created with the given config.
+In the Web UI, the system will not be deletable.
+The `Config` contains a YAML representation of the system's default configuration.
+You can use it to define a default look of the system provided by your plugin by also providing configuration for the base plugins.
+The best way to generate the config string is to load the plugin with a minimal config (as shown), set the desired values via the Web UI, and then copying the contents of the stored `config.yaml` file.
+
+---
+
+```go
+	GroupTemplates: []api.GroupTemplate{
+		{
+			Name: "Discworld", Description: "Default Discworld group",
+			Config: []byte("name: Discworld\nsystem: tutorial-discworld"),
+			Scenes: []api.SceneTmplRef{
+				{Name: "Main", TmplIndex: 0},
+			},
+		},
+	},
+```
+
+Next, we're defining a group template, so that users can quickly create a new group using the system.
+In `Config`, we reference the ID of the system config.
+In `Scenes`, we reference a scene template defined below, via its index.
+A group template must always refer to at least one scene template, since every group must have at least one scene.
+
+---
+
+```go
+	SceneTemplates: []api.SceneTemplate{
+		{
+			Name: "DiscworldMain", Description: "A scene with base modules plus Discworld calendar.",
+			Config: []byte(`name: BaseMain
+modules:
+  background:
+    enabled: true
+  herolist:
+    enabled: true
+  overlays:
+    enabled: true
+  title:
+		enabled: true
+	tutorial-discworld:
+	  enabled: true`),
+		},
+	},
+}
+```
+
+Finally, the scene template.
+Here, we define a scene that enables all default modules plus our calendar module.
+You can enable any modules you know the ID of, so you can reference modules of other plugins here.
+There will be a warning if a module referenced by a scene template is not available, but the template will still be usable.
+This means that you can have weak dependencies on other plugins.
+
+Keep the last lines, since they are necessary to compile the plugin:
+
+```go
+// required to compile; although never called
+func main() {}
+```
+
+## Building the plugin
+
+Now that the code has been written, we need to build the plugin.
+Since we renamed the module, we need to customize the build script:
+
+		# on macOS
+		sed -i '' -e 's/PluginTemplate.so/discworld.so/g' Makefile
+		# on Linux
+		sed -i 's/PluginTemplate.so/discworld.so/g' Makefile
+
+Also, you need to edit the first line of `go.mod` to contain the correct path to your module (ending with `discworld`).
+When that is done, execute `make` to compile your plugin.
+This should produce a file `discworld.so`.
+It will be quite large since Go links its entire standard library into it; sadly, linking against a shared standard library with plugins is [currently not supported][7] so there's no way around it.
+
+To test the plugin, we need QuestScreen installed.
+After running QuestScreen once, we'll have the directory structure of the configuration.
+We want to place the file `discworld.so` here:
+
+    ~/.local/share/questscreen/plugins
+
  [1]: https://golang.org/
  [2]: https://www.libsdl.org/download-2.0.php
  [3]: https://wiki.lspace.org/mediawiki/Discworld_calendar
+ [4]: https://fontawesome.com/
+ [5]: https://purecss.io/
+ [6]: https://github.com/go-bindata/go-bindata
+ [7]: https://github.com/golang/go/issues/18671
