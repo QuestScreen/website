@@ -1,0 +1,9 @@
+---
+tutpage: true
+---
+{{content}}
+
+<footer>
+  {%if page.previous %}<a class="button" href="{{page.previous}}">Previous</a>{% endif %}
+  {%if page.next %}<a class="button" href="{{page.next}}">Next</a>{% endif %}
+</footer>
