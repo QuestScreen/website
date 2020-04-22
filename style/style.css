@@ -87,6 +87,18 @@ nav > ul > li > a {
 }
 
 nav > ul > li.active > a {
+  background-color: var(--strong);
+}
+
+nav > ul > li.tutlink > a {
+  padding-left: 1.5em;
+}
+
+nav > ul > li.tutlink.active > a {
+  background-color: var(--light-highlight);
+}
+
+nav > ul > li.tutlink:not(.active) > a:not(:active):not(:hover) {
   background-color: var(--light);
 }
 
@@ -102,73 +114,133 @@ nav > ul > li > a:active {
   background-color: var(--medium-highlight);
 }
 
-article {
+main {
   flex: 1 1 auto;
   margin: 0;
   padding: 1em;
   text-align: justify;
   max-width: 80ch;
+  line-height: 1.25;
 }
 
-article > aside {
+main > section.highlighted {
   display: flex;
-  background-color: var(--light-highlight);
-  border-radius: 0.25em;
-  padding: .375em;
+  padding: 0;
+  align-items: stretch;
+}
+
+main > section.highlighted > p {
+  flex: 0 0 auto;
+  border-top-left-radius: .25em;
+  border-bottom-left-radius: .25em;
+  background-color: var(--light);
+  padding: .375em .75em;
+  margin: 0;
+}
+
+main > section.highlighted > p {
+  display: flex;
   align-items: center;
 }
 
-article > aside > i {
-  flex: 0 0 auto;
-  padding: 0 .75em;
-}
-
-article > aside > p {
+main > section.highlighted > div {
   flex: 1 1 auto;
+  border-top-right-radius: .25em;
+  border-bottom-right-radius: .25em;
+  background-color: var(--light-highlight);
+  padding: .375em .5em;
 }
 
-article a::first-letter {
+main > section.highlighted > div > p:first-child {
+  margin-top: 0;
+}
+
+main > section.highlighted > div > p:last-child {
+  margin-bottom: 0;
+}
+
+main a {
+  display: inline-block;
+  text-decoration: inherit;
+  color: inherit;
+}
+
+main a:not(.button)::first-letter {
   text-decoration: underline;
 }
 
-article a:hover,
-article a:active {
+main a:not(.button):hover,
+main a:not(.button):active {
   text-decoration: underline;
 }
 
-article > header {
+main > header {
   margin: 0 0 1em 0;
 }
 
-article > header > h1 {
+main > header > h1 {
   font-size: x-large;
   font-weight: bold;
   margin: 0;
 }
 
-article h2 {
+main h2 {
   font-size: larger;
   font-weight: bold;
 }
 
-article h3 {
+main h3 {
   font-size: medium;
   font-weight: bold;
 }
 
-article img {
+main img {
   margin: 0 auto;
   max-width: 90%;
   display: block;
 }
 
-article > figure {
+main ul > li {
+  padding: .25em;
+}
+
+main > figure {
   display: inline-block;
 }
 
-article > figure > figcaption {
+main > figure > figcaption {
   text-align: center;
   font-style: italic;
+}
+
+a.button {
+  color: black;
+  text-decoration: none;
+  background-color: var(--medium);
+  padding: .5em;
+  display: inline-block;
+}
+
+a.button:hover,
+a.button:active {
+  background-color: var(--medium-highlight);
+}
+
+a.button.prev {
+  float: left;
+}
+
+a.button.next {
+  float: right;
+}
+
+.highlight {
+  padding: .25em;
+  border-radius: .25em;
+}
+
+pre.highlight {
+  margin: 0;
 }
 
 .video-demo > video {

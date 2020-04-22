@@ -6,11 +6,12 @@ permalink: /usermanual/
 ---
 ## Introduction
 
-<aside class="info">
-  <i class="fas fa-info-circle"></i>
-  <span>This manual covers the operation of a Quest Screen installation.
-  For building and installing the app, please see the Readme file on GitHub.</span>
-</aside>
+<section class="highlighted"><i class="fas fa-info-circle"></i>
+<div>
+This manual covers the operation of a Quest Screen installation.
+For building and installing the app, please see the Readme file on GitHub.
+</div>
+</section>
 
 Quest Screen is an app that renders information on a screen during pen & paper sessions.
 This manual uses the term *session* to refer to a pen & paper session.

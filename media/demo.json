@@ -1,0 +1,8 @@
+[
+  {"src": "/media/background-changing.m4v",
+   "description": "Show the group's current environment"},
+  {"src": "/media/herolist.m4v",
+   "description": "Show the currently active group members or hide them completely"},
+  {"src": "/media/title.m4v",
+   "description": "show the name of the current location"}
+]

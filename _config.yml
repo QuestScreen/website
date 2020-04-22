@@ -5,3 +5,5 @@ description: >-
 baseurl: ""
 url: ""
 exclude: [ Readme.md, plugin-tutorial ]
+kramdown:
+  parse_block_html: true

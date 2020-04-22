@@ -3,6 +3,7 @@
   <head>
     <title>Quest Screen – {{page.title}}</title>
     <link rel="stylesheet" href="/style/style.css" />
+    <link rel="stylesheet" href="/style/solarized-light.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
   </head>
   <body>
@@ -13,11 +14,22 @@
       </a>
       <ul>
         {% assign pages = site.pages | sort:"weight" %}
-        {% for p in pages %}
+        {% for p in pages %}{% if p.weight >= 0 %}{% if p.layout == "default" %}
         <li{% if p.url == page.url %} class="active"{% endif %}>
           <a href="{{ p.url }}">{{ p.title }}</a>
         </li>
-        {% endfor %}
+        {% endif %}{% endif %}{% endfor %}
+        {% for p in pages %}{% if p.layout == "tutorialpage" %}
+        {%if p.weight == 1 %}
+        <li{% if p.url == page.url %} class="active"{% endif %}>
+          <a href="{{ p.url }}">{{p.shorttitle}}</a>
+        </li>
+        {% elsif page.layout == "tutorialpage" %}
+        <li class="tutlink{% if p.url == page.url %} active{% endif %}">
+          <a href="{{ p.url }}">{{p.shorttitle}}</a>
+        </li>
+        {% endif %}
+        {% endif %}{% endfor %}
         <li class="sep"></li>
         <li>
           <a href="https://github.com/QuestScreen"><i class="fab fa-github"></i>GitHub</a>

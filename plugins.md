@@ -16,6 +16,8 @@ QuestScreen consists of three components, each running their own thread:
 *Render* and *Storage* are implemented in Go as part of QuestScreen's executable.
 The *Web Client* is implemented in HTML/CSS/JS, its files are included as data in the executable and will be delivered to the user's browser.
 
+{::options parse_block_html="false" /}
+
 <figure>
   <svg viewBox="-1 -1 402 152" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -136,7 +138,7 @@ Currently, it is not possible to share state values between scenes (unlike confi
 
 To communicate with the Web Client, the module must define one or more **Endpoints**.
 These must implement either `api.ModulePureEndpoint` or `api.ModuleIDEndpoint`.
-Each Endpoint binds to a URI path, with the URI including a variable *id** in the case of `api.ModuleIDEndpoint`.
+Each Endpoint binds to a URI path, with the URI including a variable *id* in the case of `api.ModuleIDEndpoint`.
 The endpoints receive HTTP requests from the client and produce both the answer to the client and the data that should be passed on to the Renderer.
 Endpoints modify the **State**; you cannot have them modify the **Configuration** or anything else (since the pre-defined processing of configuration does not allow custom modification).
 Any State modification done by an Endpoint must be consistent with the *renderData* it sends to the Renderer – meaning that the resulting state of the Renderer must be equivalent to that which would result from the State sending a complete *renderData* to the Renderer.

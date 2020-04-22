@@ -24,7 +24,7 @@ func processMarkdownActions(input string) string {
 		if len(line) > 0 {
 			if line[0] == '|' {
 				if !inAction {
-					builder.WriteString("\n<section class=\"action\"><i class=\"fas fa-wrench\"></i><div>\n\n")
+					builder.WriteString("\n<section class=\"highlighted\"><i class=\"fas fa-wrench\"></i>\n<div>\n")
 					inAction = true
 				}
 
@@ -35,10 +35,15 @@ func processMarkdownActions(input string) string {
 				}
 			} else {
 				if inAction {
-					builder.WriteString("\n</div></section>\n\n")
+					builder.WriteString("</div>\n</section>\n\n")
 					inAction = false
 				}
 				builder.WriteString(line)
+			}
+		} else {
+			if inAction {
+				builder.WriteString("</div>\n</section>\n\n")
+				inAction = false
 			}
 		}
 		builder.WriteRune('\n')
@@ -61,8 +66,16 @@ func (p *page) write(nextURL string) {
 	}
 	defer f.Close()
 	writer := bufio.NewWriter(f)
-	fmt.Fprintf(writer, "---\nlayout: tutorialpage\nweight: %d\ntitle: %s\npermalink: %s\n",
-		p.index, p.title, p.url)
+	var title string
+	shorttitle := p.title
+	if len(shorttitle) == 0 {
+		title = "Plugin Tutorial"
+		shorttitle = "Plugin Tutorial"
+	} else {
+		title = "Plugin Tutorial – " + shorttitle
+	}
+	fmt.Fprintf(writer, "---\nlayout: tutorialpage\nweight: %d\ntitle: %s\nshorttitle: %s\npermalink: %s\n",
+		p.index, title, shorttitle, p.url)
 	if len(p.linkedfile) > 0 {
 		fmt.Fprintf(writer, "linkedfile: %s\n", p.linkedfile)
 	}
@@ -145,7 +158,7 @@ func (pw *pageWriter) processGoFile(path string) {
 	}
 	filename := filepath.Base(path)
 	pw.put(strings.TrimSuffix(filename, filepath.Ext(filename)),
-		"Plugin Tutorial – "+title, builder.String(), path)
+		title, builder.String(), path)
 }
 
 func (pw *pageWriter) processHTMLFile(path string) {
@@ -191,7 +204,7 @@ lexloop:
 	}
 	filename := filepath.Base(path)
 	pw.put(strings.TrimSuffix(filename, filepath.Ext(filename)),
-		"Plugin Tutorial – "+title, builder.String(), path)
+		title, builder.String(), path)
 }
 
 func (pw *pageWriter) processJSFile(path string) {
@@ -237,7 +250,7 @@ lexloop:
 	}
 	filename := filepath.Base(path)
 	pw.put(strings.TrimSuffix(filename, filepath.Ext(filename)),
-		"Plugin Tutorial – "+title, builder.String(), path)
+		title, builder.String(), path)
 }
 
 func (pw *pageWriter) Close() {
@@ -250,8 +263,8 @@ func (pw *pageWriter) Close() {
 func main() {
 	var pw pageWriter
 	defer pw.Close()
-	pw.processMdFile("Plugin Tutorial", "index")
-	pw.processMdFile("Plugin Tutorial – Introduction", "introduction")
+	pw.processMdFile("", "index")
+	pw.processMdFile("Introduction", "introduction")
 	pw.processGoFile("calendar/universitydate.go")
 	pw.processGoFile("calendar/state.go")
 	pw.processGoFile("calendar/renderer.go")
@@ -259,5 +272,5 @@ func main() {
 	pw.processHTMLFile("web/html/templates.html")
 	pw.processJSFile("web/js/controllers.js")
 	pw.processGoFile("plugin.go")
-	pw.processMdFile("Plugin Tutorial – Building the Plugin", "building")
+	pw.processMdFile("Building the Plugin", "building")
 }

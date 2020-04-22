@@ -57,14 +57,8 @@ Credits for the pictures used in the demonstration videos go to [Martin Damboldt
   }
 
   window.addEventListener('DOMContentLoaded', async (e) => {
-    try {
-      const response = await fetch("/demo.json");
-      demoVideos = await response.json();
-    } catch (err) {
-      document.querySelector(".video-demo > p").textContent =
-          "Demo videos not available. Hint to developers: They are not in the repo because of their size and need to be supplied separately.";
-      return;
-    }
+    const response = await fetch("/media/demo.json");
+    demoVideos = await response.json();
     loadDemoVideo(0);
     const fig = document.querySelector(".video-demo");
   });
