@@ -4,5 +4,7 @@
   {"src": "/media/herolist.m4v",
    "description": "Show the currently active group members or hide them completely"},
   {"src": "/media/title.m4v",
-   "description": "show the name of the current location"}
+   "description": "show the name of the current location"},
+  {"src": "/media/overlays.m4v",
+   "description": "show persons or items the group encounters"}
 ]

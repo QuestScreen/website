@@ -35,7 +35,7 @@ The app is currently in **alpha stage**; in order to use it, you need to [get th
 
 ---
 
-Credits for the pictures used in the demonstration videos go to [Martin Damboldt][1], [Krivec Ales][2], [Skitterphoto][3].
+Credits for the pictures used in the demonstration videos go to [Martin Damboldt][1], [Krivec Ales][2], [Skitterphoto][3], [susannp4][6] and [Posthuman Studios, LLC][7] (the humanoid person). The latter is distributed under the [CC Attribution-NonCommercial-ShareAlike 3.0 Unported][8] license and thus, the videos are also available under the terms of that license.
 
 <script>
   let demoVideos = [];
@@ -73,3 +73,6 @@ Credits for the pictures used in the demonstration videos go to [Martin Damboldt
  [3]: https://www.pexels.com/photo/trees-in-the-middle-of-body-of-water-819699/
  [4]: https://www.gnu.org/licenses/gpl-3.0.en.html
  [5]: https://github.com/QuestScreen/QuestScreen
+ [6]: https://pixabay.com/illustrations/clock-time-time-of-fantasy-1516967/
+ [7]: https://eclipsephase.com/resources
+ [8]: https://creativecommons.org/licenses/by-nc-sa/3.0/
