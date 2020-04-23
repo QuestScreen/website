@@ -8,7 +8,7 @@ If you don't, that's not a problem.
 Simply download the repository's content as zip file and upload it to your favorite source code hosting platform.
 While code hosting is not strictly required, we'll use it to imitate the process of creating an actual plugin as close as possible.
 
-### What we're gonna do
+## What we're gonna do
 
 In this tutorial, we'll be writing a module which displays an in-universe calendar.
 As lots of settings have custom in-universe calendars, this seems to be a worthy endeavor which can be a prototype for other calendars.

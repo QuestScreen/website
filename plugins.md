@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Plugin Documentation
-permanlink: /plugins/documentation/
+permalink: /plugins/documentation/
 weight: 4
 ---
 ## Introduction

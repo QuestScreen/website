@@ -66,16 +66,8 @@ func (p *page) write(nextURL string) {
 	}
 	defer f.Close()
 	writer := bufio.NewWriter(f)
-	var title string
-	shorttitle := p.title
-	if len(shorttitle) == 0 {
-		title = "Plugin Tutorial"
-		shorttitle = "Plugin Tutorial"
-	} else {
-		title = "Plugin Tutorial – " + shorttitle
-	}
-	fmt.Fprintf(writer, "---\nlayout: tutorialpage\nweight: %d\ntitle: %s\nshorttitle: %s\npermalink: %s\n",
-		p.index, title, shorttitle, p.url)
+	fmt.Fprintf(writer, "---\nlayout: tutorialpage\nweight: %d\ntitle: %s\npermalink: %s\n",
+		p.index, p.title, p.url)
 	if len(p.linkedfile) > 0 {
 		fmt.Fprintf(writer, "linkedfile: %s\n", p.linkedfile)
 	}
@@ -91,7 +83,7 @@ type pageWriter struct {
 
 func (pw *pageWriter) put(name string, title string, content string, linkedfile string) {
 	var url string
-	if url == "index" {
+	if name == "index" {
 		url = "/plugins/tutorial/"
 	} else {
 		url = "/plugins/tutorial/" + name
@@ -148,12 +140,22 @@ func (pw *pageWriter) processGoFile(path string) {
 			builder.WriteString("\n```\n\n")
 		}
 		text := group.Text()
+		index := strings.IndexByte(text, '\n')
 		if strings.HasPrefix(text, "title: ") {
-			index := strings.IndexByte(text, '\n')
 			title = text[7:index]
 			text = text[index+1:]
 		}
-		builder.WriteString(text)
+		indent := 0
+		for text[indent] == '\t' {
+			indent++
+		}
+		lines := strings.Split(text, "\n")
+		for i := range lines {
+			if len(lines[i]) > indent {
+				builder.WriteString(lines[i][indent:len(lines[i])])
+			}
+			builder.WriteByte('\n')
+		}
 		curOffset = fileset.Position(group.End()).Offset
 	}
 	filename := filepath.Base(path)
@@ -263,7 +265,7 @@ func (pw *pageWriter) Close() {
 func main() {
 	var pw pageWriter
 	defer pw.Close()
-	pw.processMdFile("", "index")
+	pw.processMdFile("Plugin Tutorial", "index")
 	pw.processMdFile("Introduction", "introduction")
 	pw.processGoFile("calendar/universitydate.go")
 	pw.processGoFile("calendar/state.go")

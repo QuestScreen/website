@@ -119,7 +119,7 @@ Module states are local to the scene, so if you have the *title* module active i
 Some modules, like the *background* module, depend on files (in this case, images).
 Currently, the web interface does not allow file uploads; you must place them on the host system manually.
 The files for each module have to be put in a directory whose name matches the module's ID.
-You can look up the ID of a module on the *datasets* page in the web interface.
+You can look up the ID of a module on the *Info* (start) page in the web interface.
 
 You can create such a directory in any of the following places (relative to the root directory `~/.local/share/questscreen`):
 
@@ -157,4 +157,4 @@ Plugins are placed in the `plugins` directory inside the root directory.
 They are loaded at startup; you can't add a plugin while Quest Screen is running.
 
 Plugins provide you with additional modules, additional systems and/or additional group and scene templates.
-Writing plugins is covered by the [plugin tutorial](/plugins/).
+Writing plugins is covered by the [plugin tutorial](/plugins/tutorial/).

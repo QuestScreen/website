@@ -5,7 +5,7 @@ weight: 1
 permalink: /
 ---
 **Quest Screen** is an app that displays images and information on a screen during pen & paper sessions.
-It has been designed to be installed on a small board (e.g. Raspberry Pi) but you can also run in on your desktop machine or laptop.
+It has been designed to be installed on a small board (e.g. Raspberry Pi) but you can also run it on your desktop machine or laptop.
 
 <figure class="video-demo">
   <p>JavaScript is required to show video demos</p>
@@ -28,6 +28,10 @@ Quest Screen allows you to **manage multiple groups** and **persists the state**
 It allows you to modify presentation (colors, font etc.) per group and system.
 
 A **plugin API** allows you to add modules that display any kind of additional information that is not covered by the modules provided by the core.
+
+Quest Screen is **open source** and released under the terms of the [GNU GPL v3][4].
+
+The app is currently in **alpha stage**; in order to use it, you need to [get the code from GitHub][5] and build it yourself.
 
 ---
 
@@ -67,3 +71,5 @@ Credits for the pictures used in the demonstration videos go to [Martin Damboldt
  [1]: https://www.pexels.com/photo/gray-bridge-and-trees-814499/
  [2]: https://www.pexels.com/photo/adventure-alps-amazing-beautiful-552785/
  [3]: https://www.pexels.com/photo/trees-in-the-middle-of-body-of-water-819699/
+ [4]: https://www.gnu.org/licenses/gpl-3.0.en.html
+ [5]: https://github.com/QuestScreen/QuestScreen

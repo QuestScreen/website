@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <title>Quest Screen – {{page.title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="/style/style.css" />
-    <link rel="stylesheet" href="/style/solarized-light.css"/>
+    <link rel="stylesheet" href="/style/syntax-github.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
   </head>
   <body>
@@ -22,11 +23,11 @@
         {% for p in pages %}{% if p.layout == "tutorialpage" %}
         {%if p.weight == 1 %}
         <li{% if p.url == page.url %} class="active"{% endif %}>
-          <a href="{{ p.url }}">{{p.shorttitle}}</a>
+          <a href="{{ p.url }}">{{p.title}}</a>
         </li>
         {% elsif page.layout == "tutorialpage" %}
         <li class="tutlink{% if p.url == page.url %} active{% endif %}">
-          <a href="{{ p.url }}">{{p.shorttitle}}</a>
+          <a href="{{ p.url }}">{{p.title}}</a>
         </li>
         {% endif %}
         {% endif %}{% endfor %}
@@ -37,10 +38,18 @@
       </ul>
     </nav>
     <main{% if layout.tutpage %} class="tutorial-page"{% endif %}>
-      <header>
+      <div class="pagetitle">
+        {% if layout.tutpage and page.weight > 1 -%}
+        <div class="breadcrumb">Plugin Tutorial</div>
+        {%- endif -%}
         <h1>{{ page.title }}</h1>
-        {% if page.linkedfile %}<span class="linkedfile">File: <code>{{page.linkedfile}}</code></span>{% endif %}
-      </header>
+        {% if page.linkedfile -%}
+        <section class="highlighted">
+          <p><i class="fas fa-file"></i></p>
+          <div><code>{{page.linkedfile}}</code></div>
+        </section>
+        {%- endif %}
+      </div>
 
       {{content}}
     </main>
