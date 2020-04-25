@@ -35,7 +35,8 @@ The app is currently in **alpha stage**; in order to use it, you need to [get th
 
 ---
 
-Credits for the pictures used in the demonstration videos go to [Martin Damboldt][1], [Krivec Ales][2], [Skitterphoto][3], [susannp4][6] and [Posthuman Studios, LLC][7] (the humanoid person). The latter is distributed under the [CC Attribution-NonCommercial-ShareAlike 3.0 Unported][8] license and thus, the videos are also available under the terms of that license.
+Credits for the pictures used in the demonstration videos go to [Martin Damboldt][1], [Krivec Ales][2], [Skitterphoto][3], [susannp4][6] and [Posthuman Studios, LLC][7] (the humanoid person).
+The latter is distributed under the [CC BY-NC-SA 3.0][8] license and thus, the videos are also available under the terms of that license.
 
 <script>
   let demoVideos = [];

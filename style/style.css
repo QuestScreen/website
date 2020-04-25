@@ -11,7 +11,7 @@ html {
   font-size: 16px;
 }
 
-@media only screen and (max-device-width: 480px) {
+@media only screen and (max-width: 640px) {
   html {
     font-size: 14px;
   }
@@ -24,7 +24,7 @@ body {
   display: flex;
 }
 
-@media only screen and (max-device-width: 480px) {
+@media only screen and (max-width: 640px) {
   body {
     flex-direction: column;
   }
@@ -55,7 +55,11 @@ nav > a.header > i {
   padding: .5em .75em;
 }
 
-@media only screen and (max-device-width: 480px) {
+@media only screen and (max-width: 640px) {
+  nav > a.header {
+    cursor: pointer;
+  }
+
   nav > a.header > i {
     visibility: visible;
   }
@@ -211,7 +215,8 @@ main ul > li {
 }
 
 main > figure {
-  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 main > figure > figcaption {
@@ -256,8 +261,12 @@ pre.highlight {
   margin: 0;
 }
 
-.video-demo > video {
+.video-demo {
   max-width: 640px;
+}
+
+.video-demo > video {
+  max-width: 100%;
   height: auto;
 }
 
