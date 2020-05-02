@@ -4,5 +4,6 @@ description: >-
   pen & paper sessions
 baseurl: ""
 url: ""
-github_username:  flyx
-exclude: [ Readme.md ]
+exclude: [ Readme.md, plugin-tutorial ]
+kramdown:
+  parse_block_html: true

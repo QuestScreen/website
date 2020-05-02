@@ -2,35 +2,57 @@
 <html lang="en">
   <head>
     <title>Quest Screen – {{page.title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="/style/style.css" />
+    <link rel="stylesheet" href="/style/syntax-github.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
   </head>
   <body>
     <nav>
-      <a href="#" class="header">
+      <a class="header">
         <span class="title">{{ site.title }}</span>
         <i class="fas fa-caret-down"></i>
       </a>
       <ul>
         {% assign pages = site.pages | sort:"weight" %}
-        {% for p in pages %}
+        {% for p in pages %}{% if p.weight >= 0 %}{% if p.layout == "default" %}
         <li{% if p.url == page.url %} class="active"{% endif %}>
           <a href="{{ p.url }}">{{ p.title }}</a>
         </li>
-        {% endfor %}
+        {% endif %}{% endif %}{% endfor %}
+        {% for p in pages %}{% if p.layout == "tutorialpage" %}
+        {%if p.weight == 1 %}
+        <li{% if p.url == page.url %} class="active"{% endif %}>
+          <a href="{{ p.url }}">{{p.title}}</a>
+        </li>
+        {% elsif page.layout == "tutorialpage" %}
+        <li class="tutlink{% if p.url == page.url %} active{% endif %}">
+          <a href="{{ p.url }}">{{p.title}}</a>
+        </li>
+        {% endif %}
+        {% endif %}{% endfor %}
         <li class="sep"></li>
         <li>
           <a href="https://github.com/QuestScreen"><i class="fab fa-github"></i>GitHub</a>
         </li>
       </ul>
     </nav>
-    <article>
-      <header>
+    <main{% if layout.tutpage %} class="tutorial-page"{% endif %}>
+      <div class="pagetitle">
+        {% if layout.tutpage and page.weight > 1 -%}
+        <div class="breadcrumb">Plugin Tutorial</div>
+        {%- endif -%}
         <h1>{{ page.title }}</h1>
-      </header>
+        {% if page.linkedfile -%}
+        <section class="highlighted">
+          <p><i class="fas fa-file"></i></p>
+          <div><code>{{page.linkedfile}}</code></div>
+        </section>
+        {%- endif %}
+      </div>
 
       {{content}}
-    </article>
+    </main>
 
     <script>
       document.querySelector("a.header").addEventListener("click", function(e) {

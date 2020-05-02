@@ -1,0 +1,10 @@
+---
+layout: default
+tutpage: true
+---
+{{content}}
+
+<footer>
+  {%if page.previous %}<a class="button prev" href="{{page.previous}}"><i class="fas fa-angle-left"></i> Previous</a>{% endif %}
+  {%if page.next %}<a class="button next" href="{{page.next}}">Next <i class="fas fa-angle-right"></i></a>{% endif %}
+</footer>
