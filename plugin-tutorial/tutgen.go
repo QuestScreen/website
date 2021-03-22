@@ -86,7 +86,7 @@ func (pw *pageWriter) put(name string, title string, content string, linkedfile 
 	if name == "index" {
 		url = "/plugins/tutorial/"
 	} else {
-		url = "/plugins/tutorial/" + name
+		url = "/plugins/tutorial/" + name + "/"
 	}
 	if pw.pending.index != 0 {
 		pw.pending.write(url)

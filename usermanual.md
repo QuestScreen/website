@@ -16,102 +16,134 @@ For building and installing the app, please see [Installation](/installation/).
 Quest Screen is an app that renders information on a screen during pen & paper sessions.
 This manual uses the term *session* to refer to a pen & paper session.
 
-Quest Screen is a modular display, meaning that the image rendered on the screen is assembled by a number of independent *modules*.
-The set of modules that are currently active is called the current *scene*.
-Which modules are available depends on which plugins you have installed.
+Quest Screen is a modular display, meaning that the image rendered on the screen is assembled from a number of independent *modules*.
+For example, the *background* module renders the current background image, and the *herolist* module renders the list of heroes on top of that.
 
-Whatever the module currently displays is its *state*.
-For example, the text displayed by the *title* module is its state.
-Moreover, each module has a *configuration* which describes *how* the state is displayed.
-For example, the *title* module's configuration contains the font used for displaying its text, and the background color.
+The set of modules that can contribute to the current image make up the current *scene*.
+For example, the default scene consists of the modules *background*, *herolist*, *title* and *overlays*.
+You can use different scenes during a session, for example if you have a module displaying some kind of map which needs too much place to fit in with other modules.
+Additional modules can be added via plugins.
 
-During a session, you typically only alter the state of active modules.
-Changes to the state will be animated; for example, if you change the text in the *title* module, the old title will move outside of the screen and then the new text will move in.
-You can also switch scenes during a session, e.g. for switching between environment view and battle view.
-You can freely define any number of scenes and which modules are active in those scenes.
+The information shown on the display is the current *state*.
+Each scene has a state and that state is retained when you swich between sessions, and also from one session to the next.
+For example, the *title* module's state is the text it currently displays.
+Changing the state will be animated.
 
-Between sessions, you can modify the configuration of each module.
-You can store different configurations per scene, group and/or system.
-If you modify the configuration while a scene is displayed, it will be immediately updated without any animation.
+Additionally, you can *configure* some modules.
+Such configuration typically contains stuff like background color or text font.
+Configuration should be customized between sessions and changes to configuration are not animated (they are applied immediately).
 
-You manage your heroes, groups, systems and scenes as *datasets*.
-Those can also be created, modified and removed via the web interface.
-Quest Screen is not designed to take input from players; only the game master can for example create or remove heroes.
+Quest Screen allows you to manage any number of *groups* with each group having its own set of scenes, configuration and state.
+You can use *systems* (meaning *pen & paper systems*) to manage configuration and resources (e.g. images) available to all groups using that system.
 
-## Running Quest Screen
+Generally, Quest Screen is designed to be controlled by the game master via web interface (which runs on any modern browser, be it on a smartphone, tablet or laptop).
+There is no interface for players.
 
-Quest Screen uses a directory hierarchy to store its configuration and state.
-The root directory is located at `~/.local/share/questscreen`.
-Before you start it the first time, you need to put some fonts in the subdirectory `fonts` so that it can render text.
-Quest Screen does not search the fonts installed on your system so that you won't get a list of epic length when selecting a font.
+## Setup
+
+You need the `questscreen` executable.
+Refer to the **Readme** file on GitHub to read up how to compile it.
+We'll start it once to initialize its default data directory.
+
+On first startup, it will display an empty screen with the Quest Screen logo.
+This is because initially, it does not have any fonts available and thus cannot render text.
+In a desktop environment, it will also start windowed.
+You can quit it by pressing *Escape* two times or closing the window.
+
+After the first run, it will have created its data directory in `~/.local/share/questscreen`.
+Now to actually use it, you need to give it at least one font to render text.
+Fonts go in the `fonts` subdirectory; you can put TTF and OTF files there.
 A nice free font for fantasy-themed groups would be [Garamond](https://garamond.org/).
-You can also put symlinks to fonts installed on your system in the directory.
+You can also put symlinks to fonts installed on your system into the directory.
 
 Another important subdirectory is `textures` where you can put grayscale images.
-These images will be used to texture backgrounds with two colors, where white is filled with the first color, black with the second, and all gray shades with the corrensponding mixture of the two colors.
-The two colors are selectable via the *configuration* interface; you can use a texture with different colors.
+These images will be used to texture backgrounds with two colors, where white is filled with the first color, black with the second, and gray shades with the corrensponding mixture of the two colors.
 The textures should be repeatable in both directions.
 Quest Screen does not require any textures to run.
 
-Both fonts and textures are loaded at startup; if you add some, you need to restart Quest Screen.
+Both fonts and textures are loaded at startup; if you add some, you'll need to restart Quest Screen.
 
-Quest Screen is designed to be executed on a simple board such as the Raspberry Pi.
-Therefore, it takes startup parameters via the command line.
-The parameters it takes are:
+Let's have a quick look at the default configuration that has been created in `config.yaml` inside the data directory:
 
- * `-f`, `--fullscreen`: Run in full screen. You typically want to use that flag.
-   Running Quest Screen windowed is only useful for debugging.
- * `-p <num>`, `--port <num>`: Instruct Quest Screen to run the web interface on port `<num>`.
-   Default is `8080`.
+```yaml
+fullscreen: false
+width: 800
+height: 600
+port: 8080
+keyActions:
+  - key: Escape
+    returnValue: 0
+    description: Exit
+```
 
-After starting Quest Screen, you can control it via the web interface.
-Any keyboard input on the host system will cause a popup to appear asking you whether you want to quit (this won't work if no fonts are installed because then it can't render any text).
-The startup screen will tell you the IP address and port under which the web interface is available.
-The host obviously must be connected to a network; whether the displayed URL works depends on your network setup, but it should suffice for a simple home network.
+`width` and `height` define the window's size if it is not `fullscreen`.
+`port` is the port the web interface will be available at.
+`keyActions` is a list of keys you can press to exit the app.
 
-## Managing Datasets
+When the app is running and at least one font is available, pressing any key will display a popup which shows all configured keys that can be used to quit the application, along with their description.
+The return value is returned by the app.
+This is a convenience feature for using Quest Screen on a board like the Raspberry Pi.
+You can write a simple script for deciding what to do after the app quits based on which key has been pressed (e.g. shutting down the system, launching some media center, etc).
 
-The web interface allows you to manage your *datasets*, i.e. systems, groups, scenes and heroes.
+Apart from quitting the app, you cannot control it locally – everything else is done via the web interface.
+When you have at least one font installed, the app will show you the URL you need to enter in your browser to reach the web interface.
+This will be `http://<ip>:<port>` with `<ip>` being the public IP address of the current device, and `<port>` being the configured port.
+
+## The Web Interface
+
+The main page of the web interface shows you the list of currently loaded modules.
+The menu at the top gives you three options:
+
+ * *Switch Group* lets you switch to a group.
+   Switching the group will load the group's recently active scene and show it on the display.
+   On the web interface, you will get an interface for manipulating the scene's state.
+ * *Configuration* lets you modify the configuration of your modules.
+ * *Datasets* lets you manage your groups and systems.
+   This is where you can create your first group.
+
+### Managing Datasets
+
+Here you manage your systems, groups, scenes and heroes.
 Scenes and heroes always belong to a group, a group may link to a system.
-Sometimes plugins require a system to exist, in which case you cannot remove it as long as the plugin is installed.
+Sometimes plugins require some system to exist, in which case you cannot remove it as long as the plugin is installed.
 
-When you create a new group or scene, you can select between a number of templates.
+When you create a new group or scene, you can select between from number of templates.
 Templates are defined by plugins and are used to provide default configurations which you can then modify.
 For example, a plugin might provide a group template which contains a default scene (with background, list of heroes and so on) and a battle scene which contains the module showing battle stats that is provided by the plugin.
 
 The scene templates contained in a group template are also available for creating single scenes.
 The *base* plugin (which provides basic modules that are always available) provides empty templates if you want to start with an empty group or scene.
 
-## Configuring the Modules
+### Configuring the Modules
 
 By default, modules have a pretty simple look.
 For example, the *title* module by default has a white background.
 You can change the module's look in the *configuration* section.
 
-Configuration has multiple layers.
-On each layer, you may define a configuration that overrides the one from a lower layer.
-If you don't set a configuration for a layer, the configuration from the lower layer will be used.
+A module's configuration has multiple layers.
+On each layer, you may define configuration values that override the ones from a lower layer.
+If you don't set some configuration value for a layer, the configuration value from the lower layer will be used.
 The following layers exist:
 
- * The default configuration is defined for each module and is not editable.
- * The base configuration applies to all groups and overrides the default configuration.
- * The system configuration applies to all groups linked to that system and overrides the base configuration.
- * The group configuration applies to all scenes in that group and overrides the system configuration (or the base configuration if the group is not linked to a system).
- * The scene configuration applies to a single scene and overrides the group configuration.
+ * The **default** configuration is defined for each module and is not editable.
+ * The **base** configuration applies to all groups and overrides the default configuration.
+ * The **system** configuration applies to all groups linked to that system and overrides the base configuration.
+ * The **group** configuration applies to all scenes in that group and overrides the system configuration (or the base configuration if the group is not linked to a system).
+ * The **scene** configuration applies to a single scene and overrides the group configuration.
 
 Usually, you want to edit the base or system configuration unless you want to have a different look for each group.
 Scene configuration is useful if you want to use a module in multiple scenes but want to have it look different.
 
-## The State: Using Quest Screen during a session
+### Using Quest Screen during a session
 
 Finally, when you have created a group and configured it to your liking, you can start using Quest Screen during a session.
 You start by selecting the active group.
 Only one group can be active and you can only modify the state of the active group.
 
-Unlike the configuration and dataset pages (where you can click *reset* or *save* to commit your changes), changes to the state  are typically sent immediately.
+Unlike the configuration and dataset pages (where you can click *reset* or *save* to commit your changes), changes to the state are typically sent immediately.
 Each action triggers the corresponding animation.
 Which interactions are available depends on the active modules in the current scene.
-Changing the scene will modify the possible interactions depending on the modules in the new scene.
+Changing the scene will change the possible interactions depending on the modules in the new scene.
 Module states are local to the scene, so if you have the *title* module active in two scenes, updating the text in one scene will not modify the text displayed in the other scene.
 
 ## Providing files to modules
@@ -119,7 +151,7 @@ Module states are local to the scene, so if you have the *title* module active i
 Some modules, like the *background* module, depend on files (in this case, images).
 Currently, the web interface does not allow file uploads; you must place them on the host system manually.
 The files for each module have to be put in a directory whose name matches the module's ID.
-You can look up the ID of a module on the *Info* (start) page in the web interface.
+You can look up the ID of a module on the web interface's main page.
 
 You can create such a directory in any of the following places (relative to the root directory `~/.local/share/questscreen`):
 
