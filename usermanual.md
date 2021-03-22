@@ -1,7 +1,7 @@
 ---
 layout: default
 title: User Manual
-weight: 2
+weight: 3
 permalink: /usermanual/
 ---
 ## Introduction
@@ -9,7 +9,7 @@ permalink: /usermanual/
 <section class="highlighted"><i class="fas fa-info-circle"></i>
 <div>
 This manual covers the operation of a Quest Screen installation.
-For building and installing the app, please see the Readme file on GitHub.
+For building and installing the app, please see [Installation](/installation/).
 </div>
 </section>
 

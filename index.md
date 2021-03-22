@@ -31,7 +31,8 @@ A **plugin API** allows you to add modules that display any kind of additional i
 
 Quest Screen is **open source** and released under the terms of the [GNU GPL v3][4].
 
-The app is currently in **alpha stage**; in order to use it, you need to [get the code from GitHub][5] and build it yourself.
+The app is currently in **alpha stage**.
+You can install it by following the [installation instructions](/installation/).
 
 ---
 
