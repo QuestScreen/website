@@ -10,7 +10,7 @@ next: /manual/datasets/
 ---
 
 All of QuestScreen's data is kept in its *data directory*.
-By default, the data directory is located at `~/.config/questscreen` (`~` being your user directory).
+By default, the data directory is located at `~/.local/share/questscreen` (`~` being your user directory).
 You can tell QuestScreen to use the data directory at *path* instead via the command line option `-d `*`path`*.
 If the data directory does not exist when QuestScreen starts, it will generate the directory with all needed subdirectories.
 
