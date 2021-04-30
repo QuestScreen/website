@@ -94,15 +94,15 @@ nav > ul > li.active > a {
   background-color: var(--strong);
 }
 
-nav > ul > li.tutlink > a {
+nav > ul > li.subentry > a {
   padding-left: 1.5em;
 }
 
-nav > ul > li.tutlink.active > a {
+nav > ul > li.subentry.active > a {
   background-color: var(--light-highlight);
 }
 
-nav > ul > li.tutlink:not(.active) > a:not(:active):not(:hover) {
+nav > ul > li.subentry:not(.active) > a:not(:active):not(:hover) {
   background-color: var(--light);
 }
 

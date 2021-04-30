@@ -1,11 +1,15 @@
 ---
 layout: default
-title: Installation
+title: Building
 weight: 2
-permalink: /installation/
+permalink: /building/
 ---
 
-## Installation
+<section class="highlighted"><i class="fas fa-info-circle"></i>
+<div>
+This page is currently completely outdated and awaits a rewrite.
+</div>
+</section>
 
 QuestScreen is written in Go.
 Since Go's support for plugins is rather lackluster (for starters, they don't work on Windows), QuestScreen offers an installer that helps you compiling it from source and enables you to add any plugins you want to use directly into the main application.

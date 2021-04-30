@@ -2,9 +2,14 @@
 layout: default
 title: Plugin Documentation
 permalink: /plugins/documentation/
-weight: 4
+weight: 8
 ---
-## Introduction
+
+<section class="highlighted"><i class="fas fa-info-circle"></i>
+<div>
+This page is currently completely outdated and awaits a rewrite.
+</div>
+</section>
 
 This is the high-level plugin API documentation.
 It describes the facilities defined in the plugin API and how they interact with the QuestScreen core.

@@ -66,13 +66,29 @@ func (p *page) write(nextURL string) {
 	}
 	defer f.Close()
 	writer := bufio.NewWriter(f)
-	fmt.Fprintf(writer, "---\nlayout: tutorialpage\nweight: %d\ntitle: %s\npermalink: %s\n",
-		p.index, p.title, p.url)
+	fmt.Fprintf(writer, `---
+layout: with-nav-footer
+weight: %d
+title: %s
+permalink: %s
+`, p.index, p.title, p.url)
+	if p.index > 9 {
+		writer.WriteString(`parent: /plugins/tutorial/
+breadcrumb: Plugin Tutorial
+`)
+	}
 	if len(p.linkedfile) > 0 {
 		fmt.Fprintf(writer, "linkedfile: %s\n", p.linkedfile)
 	}
 	fmt.Fprintf(writer, "previous: %s\nnext: %s\n---\n",
 		p.prevURL, nextURL)
+	writer.WriteString(`
+<section class="highlighted"><i class="fas fa-info-circle"></i>
+<div>
+This page is currently completely outdated and awaits a rewrite.
+</div>
+</section>
+`)
 	writer.WriteString(p.content)
 	writer.Flush()
 }
@@ -90,6 +106,8 @@ func (pw *pageWriter) put(name string, title string, content string, linkedfile 
 	}
 	if pw.pending.index != 0 {
 		pw.pending.write(url)
+	} else {
+		pw.pending.index = 8
 	}
 	pw.pending = page{index: pw.pending.index + 1,
 		name: name, title: title, content: processMarkdownActions(content),
